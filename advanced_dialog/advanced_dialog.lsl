@@ -120,8 +120,8 @@ default
             return;
         }
         
-        string icon = llJsonGetValue( text, [ "icon" ] );
-        if( icon == JSON_INVALID || llStringTrim( icon, STRING_TRIM ) == "" )
+        string icon = llStringTrim( llJsonGetValue( text, [ "icon" ] ), STRING_TRIM );
+        if( icon == JSON_INVALID || icon == "" )
         {
             //
             // The "icon" parameter is the only parameter that is not required.
