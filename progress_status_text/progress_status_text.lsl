@@ -50,9 +50,15 @@ vector progress_color = <1, 1, 1>;
 
 integer auto_update = TRUE;
 
+/**
+ * This prevents Top Scripts and script-memory checkers from seeing this script
+ * as a memory hog.
+**/
+#define set_memory_limit() llSetMemoryLimit( llGetUsedMemory() + 2048 )
+
 update_progress()
 {
-    llSetMemoryLimit( llGetUsedMemory() + 2048 );
+    set_memory_limit();
 
     if( progress_marquee )
     {
@@ -103,11 +109,7 @@ default
 {
     state_entry()
     {
-        //
-        // Prevent Top Scripts and script-memory checkers from seeing this script
-        // as a memory hog.
-        //
-        llSetMemoryLimit( llGetUsedMemory() + 2048 );
+        set_memory_limit();
     }
 
     on_rez( integer start_param )
@@ -117,7 +119,7 @@ default
 
     link_message( integer sender_num, integer num, string str, key id )
     {
-        llSetMemoryLimit( llGetUsedMemory() + 2048 );
+        set_memory_limit();
 
         if( num == LM_SET_PROGRESS_LINK )
         {
