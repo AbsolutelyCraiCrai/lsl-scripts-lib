@@ -40,6 +40,19 @@ An asterisk (*) denotes a required parameter.
 The following example shows a confirmation dialog to the user:
 
 	string buttons = llList2Json( JSON_ARRAY, [ "Yes", "No" ] );
-	list data = [ "target", llGetOwner(), "title", "Confirm Operation", "message", "Are you sure you wish to continue?", "buttons", buttons ];
+
+	list data = [];
+	data += [ "target", llGetOwner() ];
+	data += [ "icon", "icons/Inv_UnknownObject.png" ];
+	data += [ "title", "Confirm Operation" ];
+	data += [ "message", "Are you sure you wish to continue?" ];
+	data += [ "buttons", buttons ];
+
 	integer channel = -100;
-	llMessageLinked( LINK_THIS, ADVANCED_DIALOG_MESSAGE, llList2Json( JSON_OBJECT, data ), (string)channel );
+
+	llMessageLinked(
+		LINK_THIS,
+		-39484225, // ADVANCED_DIALOG_MESSAGE
+		llList2Json( JSON_OBJECT, data ),
+		(string)channel
+	);
