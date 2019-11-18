@@ -16,14 +16,14 @@ To use Progress Status Text, send a link message with the following format:
 ### Command Constants
 |Constant|Value|Usage|
 |--|--|--|
-|`LM_SET_PROGRESS_LINK`|-800100|Sets the link number to show progress on. `data` should be the link number, an LSL link constant, or `0` for `LINK_THIS` (default).|
-|`LM_SET_PROGRESS_TEXT`|-800101|Sets the progress text to display above the progress bar. `data` should be the text.|
-|`LM_SET_PROGRESS_VALUE`|-800102|Sets the value of the progress bar. `data` should be the value as an integer between 0 and 100. **Note:** Setting `LM_SET_PROGRESS_MARQUEE` to `TRUE` will force Progress Status Text to ignore this setting.|
-|`LM_SET_PROGRESS_MARQUEE`|-800103|Sets whether the progress bar should be animated or not. `data` should be `TRUE` (`1`) or `FALSE` (`0`). Default is `FALSE`.|
-|`LM_SET_PROGRESS_COLOR`|-800104|Sets the colour of the progress text and bar. `data` should be a colour vector. Default is `<1, 1, 1>` (white).|
-|`LM_SET_PROGRESS_AUTO_UPDATE`|-800105|Sets whether any change to the settings with the above constants should force an update immediately. `data` should be `TRUE` (`1`) or `FALSE` (`0`). Default is `TRUE`. **Note:** Setting `LM_SET_PROGRESS_MARQUEE` to `TRUE` forces this setting on during the animation.|
-|`LM_TRIGGER_PROGRESS_UPDATE`|-800106|Triggers an update to the progress bar immediately. `data` is unused.|
-|`LM_RESET_PROGRESS`|-800107|Triggers a reset of the Progress Status Text script. `data` is unused.|
+|`LM_SET_PROGRESS_LINK`|`-800100`|Sets the link number to show progress on. `data` should be the link number, an LSL link constant, or `0` for `LINK_THIS` (default).|
+|`LM_SET_PROGRESS_TEXT`|`-800101`|Sets the progress text to display above the progress bar. `data` should be the text.|
+|`LM_SET_PROGRESS_VALUE`|`-800102`|Sets the value of the progress bar. `data` should be the value as an integer between 0 and 100. **Note:** Setting `LM_SET_PROGRESS_MARQUEE` to `TRUE` will force Progress Status Text to ignore this setting.|
+|`LM_SET_PROGRESS_MARQUEE`|`-800103`|Sets whether the progress bar should be animated or not. `data` should be `TRUE` (`1`) or `FALSE` (`0`). Default is `FALSE`.|
+|`LM_SET_PROGRESS_COLOR`|`-800104`|Sets the colour of the progress text and bar. `data` should be a colour vector. Default is `<1, 1, 1>` (white).|
+|`LM_SET_PROGRESS_AUTO_UPDATE`|`-800105`|Sets whether any change to the settings with the above constants should force an update immediately. `data` should be `TRUE` (`1`) or `FALSE` (`0`). Default is `TRUE`. **Note:** Setting `LM_SET_PROGRESS_MARQUEE` to `TRUE` forces this setting on during the animation.|
+|`LM_TRIGGER_PROGRESS_UPDATE`|`-800106`|Triggers an update to the progress bar immediately. `data` is unused.|
+|`LM_RESET_PROGRESS`|`-800107`|Triggers a reset of the Progress Status Text script. `data` is unused.|
 
 ## Example usage
 The following example shows a yellow progress bar climbing by 1% every 0.3 seconds:
