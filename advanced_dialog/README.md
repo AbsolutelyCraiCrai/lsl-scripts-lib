@@ -56,3 +56,5 @@ The following example shows a confirmation dialog to the user:
 		llList2Json( JSON_OBJECT, data ),
 		(string)channel
 	);
+
+![A screenshot of an example using Advanced Dialog.](https://raw.githubusercontent.com/JohnEMParker/lsl-scripts-lib/master/advanced_dialog/example.png "Advanced Dialog Example")
