@@ -66,4 +66,4 @@ The following example shows a yellow progress bar climbing by 1% every 0.3 secon
         llSleep( 0.3 );
     }
 
-**Note:** We recommend not updating the progress bar's value any faster than 0.3 second intervals due to possible race conditions with Second Life link messages.
+**Note:** I recommend not updating the progress bar's value any faster than 0.3 second intervals due to possible race conditions with Second Life link messages.
