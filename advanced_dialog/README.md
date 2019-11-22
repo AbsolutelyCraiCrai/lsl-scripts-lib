@@ -33,7 +33,7 @@ The JSON parameters used are as follows:
 |`icon`|`string`|The file path of the icon to show instead of the information icon, relative to the viewer's active skin folder.|
 |`title`*|`string`|The title of the dialog next to the icon.|
 |`message`*|`string`|The message of the dialog.|
-|`buttons`*|`string`|A list of buttons to show on the dialog, formatted in a JSON string itself using `llList2Json( JSON_ARRAY, list )`.|
+|`buttons`*|`string`|A list of buttons to show on the dialog, formatted in a JSON string itself using `llList2Json( JSON_ARRAY, list )`. **Note:** This parameter is not supported for `TYPE_TEXTBOX` dialogs, and will be ignored if provided.|
 
 An asterisk (*) denotes a required parameter.
 
