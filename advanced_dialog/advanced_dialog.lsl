@@ -1,11 +1,16 @@
 /**
  * Advanced Dialog by John Parker
- * Version 1.0
+ * Version 1.1
  *
  * This script allows you to show "fancy" looking dialogs in LSL, including a title
  * icon and spaced-out button layouts.
  *
  * See readme file for usage instructions.
+ *
+ * Change history:
+ *
+ *    22/11/2019 - Added llTextBox() support with new "type" JSON parameter. Bumped
+ *                 version to 1.1.
  *
  * Licence:
  *
@@ -36,6 +41,14 @@
  * The link message value that we check for when reading link messages.
 **/
 #define ADVANCED_DIALOG_MESSAGE -39484225
+
+/**
+ * The type of dialog to show.
+ *
+ * TYPE_DIALOG uses llDialog(), TYPE_TEXTBOX uses llTextBox().
+**/
+#define TYPE_DIALOG 0
+#define TYPE_TEXTBOX 1
 
 /**
  * This script tries to have a maximum of 4 KB free at any one time. While this is
@@ -119,6 +132,13 @@ default
             invalid_json();
             return;
         }
+
+        //
+        // Note: The "type" parameter is optional, but an invalid JSON value
+        //       will give 0 (TYPE_DIALOG) by default anyway, so no need to
+        //       validate value.
+        //
+        integer type = (integer)llJsonGetValue( text, [ "type" ] );
         
         string icon = llStringTrim( llJsonGetValue( text, [ "icon" ] ), STRING_TRIM );
         if( icon == JSON_INVALID || icon == "" )
@@ -152,15 +172,22 @@ default
             return;
         }
         
-        string buttons = llJsonGetValue( text, [ "buttons" ] );
-        if( buttons == JSON_INVALID )
+        if( type == TYPE_DIALOG )
         {
-            invalid_json();
-            return;
-        }
-        
-        list btns = get_button_list( llJson2List( buttons ) );
+            string buttons = llJsonGetValue( text, [ "buttons" ] );
+            if( buttons == JSON_INVALID )
+            {
+                invalid_json();
+                return;
+            }
+            
+            list btns = get_button_list( llJson2List( buttons ) );
 
-        llDialog( target, "\n<icon>" + icon + "</icon> " + title + "\n\n" + msg, btns, channel );
+            llDialog( target, "\n<icon>" + icon + "</icon> " + title + "\n\n" + msg, btns, channel );
+        }
+        else if( type == TYPE_TEXTBOX )
+        {
+            llTextBox( target, "\n<icon>" + icon + "</icon> " + title + "\n\n" + msg, channel );
+        }
     }
 }

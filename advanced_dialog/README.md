@@ -29,6 +29,7 @@ The JSON parameters used are as follows:
 |Parameter|Type|Description|
 |--|--|--|
 |`target`*|`key`|The UUID of the user to send the dialog to.|
+|`type`|`integer`|The type of dialog to show. Supported options are `TYPE_DIALOG` (`0`) or `TYPE_TEXTBOX` (`1`). Default is `TYPE_DIALOG` (`0`).|
 |`icon`|`string`|The file path of the icon to show instead of the information icon, relative to the viewer's active skin folder.|
 |`title`*|`string`|The title of the dialog next to the icon.|
 |`message`*|`string`|The message of the dialog.|
