@@ -1,11 +1,16 @@
 /**
  * Progress Status Text by John Parker
- * Version 1.0
+ * Version 1.1
  *
  * This script displays a progress bar above a prim, with support for a marquee
  * animation.
  *
  * See readme file for usage instructions.
+ *
+ * Change history:
+ *
+ *    23/11/2019 - Updated marquee progress bar to show a 4-block trail instead
+ *                 of just 1 block moving left-to-right. Bumped version to 1.1.
  *
  * Licence:
  *
@@ -48,14 +53,51 @@ update_progress()
     if( progress_marquee )
     {
         string progress_markers = "";
-        integer i;
 
-        for( i = 0; i < 20; i++ )
+        if( progress_marquee_state < 4 )
         {
-            if( progress_marquee_state == i )
+            integer filled_chars = progress_marquee_state;
+
+            integer i;
+            for( i = 0; i < filled_chars; i++ )
+            {
                 progress_markers += "█";
-            else
+            }
+
+            integer unfilled_chars = 20 - filled_chars;
+            for( i = 0; i < unfilled_chars; i++ )
+            {
                 progress_markers += "░";
+            }
+        }
+        else
+        {
+            integer unfilled_chars = progress_marquee_state - 4;
+            
+            integer i;
+            for( i = 0; i < unfilled_chars; i++ )
+            {
+                progress_markers += "░";
+            }
+
+            if( progress_marquee_state > 20 )
+            {
+                integer filled_chars = -progress_marquee_state + 24;
+                for( i = 0; i < filled_chars; i++ )
+                {
+                    progress_markers += "█";
+                }
+            }
+            else
+            {
+                progress_markers += "████";
+                i += 4;
+
+                for( ; i < 20; i++ )
+                {
+                    progress_markers += "░";
+                }
+            }
         }
         
         llSetLinkPrimitiveParamsFast(
@@ -172,7 +214,7 @@ default
     {
         progress_marquee_state++;
 
-        if( progress_marquee_state == 20 )
+        if( progress_marquee_state == 24 )
             progress_marquee_state = 0;
 
         update_progress();

@@ -1,11 +1,16 @@
 /**
  * Progress Status Text by John Parker
- * Version 1.0
+ * Version 1.1
  *
  * This script displays a progress bar above a prim, with support for a marquee
  * animation.
  *
  * See readme file for usage instructions.
+ *
+ * Change history:
+ *
+ *    23/11/2019 - Updated marquee progress bar to show a 4-block trail instead
+ *                 of just 1 block moving left-to-right. Bumped version to 1.1.
  *
  * Licence:
  *
@@ -63,14 +68,72 @@ update_progress()
     if( progress_marquee )
     {
         string progress_markers = "";
-        integer i;
 
-        for( i = 0; i < 20; i++ )
+        //
+        // This code can be hard to wrap your head around. We need to create a
+        // 4-block marquee across a 20-block progress bar.
+        //
+        // When the state is < 4, we only need to show UP TO 4 filled blocks.
+        // So, if state = 1, we need 1 block, state = 2, we need 2 blocks, etc.
+        // until we get to 4. The rest are unfilled blocks.
+        //
+        // But, if the state is >= 4, then we have to show a "trail" of 4 blocks
+        // "moving" along the 20-block bar. This is accomplished by adding unfilled
+        // blocks before the trail, THEN adding the trail, THEN adding the rest.
+        //
+        // However, if the state is > 20, we have gone OVER how many blocks we
+        // need to show, so we calculate how many filled blocks to show first
+        // which is 4 - ( state - 20 ). This is because state - 20 is how many
+        // blocks we DON'T need, took away from 4 which is the MAXIMUM amount of
+        // filled blocks we want to show. This can be simplified to -state + 24.
+        //
+        // Yay, mathematics! *cough*.
+        //
+
+        if( progress_marquee_state < 4 )
         {
-            if( progress_marquee_state == i )
+            integer filled_chars = progress_marquee_state;
+
+            integer i;
+            for( i = 0; i < filled_chars; i++ )
+            {
                 progress_markers += "█";
-            else
+            }
+
+            integer unfilled_chars = 20 - filled_chars;
+            for( i = 0; i < unfilled_chars; i++ )
+            {
                 progress_markers += "░";
+            }
+        }
+        else
+        {
+            integer unfilled_chars = progress_marquee_state - 4;
+            
+            integer i;
+            for( i = 0; i < unfilled_chars; i++ )
+            {
+                progress_markers += "░";
+            }
+
+            if( progress_marquee_state > 20 )
+            {
+                integer filled_chars = -progress_marquee_state + 24;
+                for( i = 0; i < filled_chars; i++ )
+                {
+                    progress_markers += "█";
+                }
+            }
+            else
+            {
+                progress_markers += "████";
+                i += 4;
+
+                for( ; i < 20; i++ )
+                {
+                    progress_markers += "░";
+                }
+            }
         }
         
         llSetLinkPrimitiveParamsFast(
@@ -187,7 +250,11 @@ default
     {
         progress_marquee_state++;
 
-        if( progress_marquee_state == 20 )
+        //
+        // Note we account for the 20 blocks + the 4-block trail in this
+        // conditional which is what state 24 is.
+        //
+        if( progress_marquee_state == 24 )
             progress_marquee_state = 0;
 
         update_progress();
