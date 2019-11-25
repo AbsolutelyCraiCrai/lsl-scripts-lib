@@ -37,6 +37,8 @@ The JSON parameters used are as follows:
 
 An asterisk (*) denotes a required parameter.
 
+Specifying `JSON_NULL` as a button will result in that button becoming a blank space. This is useful for hiding a button, or enforcing a more spaced out layout of the dialog.
+
 ## Example usage
 The following example shows a confirmation dialog to the user:
 

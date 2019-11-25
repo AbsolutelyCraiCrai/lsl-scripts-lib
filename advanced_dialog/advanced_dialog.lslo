@@ -1,6 +1,6 @@
 /**
  * Advanced Dialog by John Parker
- * Version 1.1
+ * Version 1.2
  *
  * This script allows you to show "fancy" looking dialogs in LSL, including a title
  * icon and spaced-out button layouts.
@@ -11,6 +11,10 @@
  *
  *    22/11/2019 - Added llTextBox() support with new "type" JSON parameter. Bumped
  *                 version to 1.1.
+ *
+ *    25/11/2019 - Added the ability to specify JSON_NULL as a button, which is
+ *                 translated to a blank button should the scripter require it.
+ *                 Bumped version to 1.2.
  *
  * Licence:
  *
@@ -51,6 +55,10 @@ invalid_json()
 list get_button_list( list buttons )
 {
     llSetMemoryLimit( llGetUsedMemory() + 4096 );
+
+    string button_str = llDumpList2String( buttons, "▫▫▫" );
+    button_str = llDumpList2String( llParseStringKeepNulls( button_str, [ JSON_NULL ], [] ), " " );
+    buttons = llParseStringKeepNulls( button_str, [ "▫▫▫" ], [] );
 
     integer len = llGetListLength( buttons );
     
@@ -95,7 +103,7 @@ default
             invalid_json();
             return;
         }
-
+        
         integer type = (integer)llJsonGetValue( text, [ "type" ] );
         
         string icon = llStringTrim( llJsonGetValue( text, [ "icon" ] ), STRING_TRIM );
