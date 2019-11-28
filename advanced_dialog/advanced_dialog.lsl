@@ -1,6 +1,6 @@
 /**
  * Advanced Dialog by John Parker
- * Version 1.2
+ * Version 1.3
  *
  * This script allows you to show "fancy" looking dialogs in LSL, including a title
  * icon and spaced-out button layouts.
@@ -15,6 +15,12 @@
  *    25/11/2019 - Added the ability to specify JSON_NULL as a button, which is
  *                 translated to a blank button should the scripter require it.
  *                 Bumped version to 1.2.
+ *
+ *    28/11/2019 - Fixed a small bug where setting a blank button list resulted in
+ *                 a script error. The list length check is now done BEFORE null
+ *                 parsing. Additionally, setting the list to one JSON_NULL value
+ *                 now results in the standard OK button set to be used. Bumped
+ *                 version to 1.3.
  *
  * Licence:
  *
@@ -78,7 +84,21 @@
 list get_button_list( list buttons )
 {
     set_memory_limit();
-
+    
+    integer len = llGetListLength( buttons );
+    
+    //
+    // Return the default OK set if buttons list is blank or JSON_NULL.
+    //
+    // Note: This does not prevent the scripter setting more than 1 button to
+    //       JSON_NULL. Any more than 1 JSON_NULL, and it will treat it as if
+    //       they are set to some text. This will result in three or more blank
+    //       buttons. While this isn't recommended, it is allowed.
+    //
+    if( len == 0 ||
+        ( len == 1 && llList2String( buttons, 0 ) == JSON_NULL ) )
+        return [ " ", "OK", " " ];
+    
     //
     // The following allows the scripter to specify JSON_NULL as a button value
     // to replace it with a blank button should the option be necessary (i.e.
@@ -95,11 +115,6 @@ list get_button_list( list buttons )
     string button_str = llDumpList2String( buttons, "▫▫▫" );
     button_str = llDumpList2String( llParseStringKeepNulls( button_str, [ JSON_NULL ], [] ), " " );
     buttons = llParseStringKeepNulls( button_str, [ "▫▫▫" ], [] );
-
-    integer len = llGetListLength( buttons );
-    
-    if( len == 0 )
-        return [ " ", "OK", " " ];
 
     integer mod = len % 3;
     
