@@ -1,6 +1,6 @@
 /**
  * Progress Status Text by John Parker
- * Version 1.1
+ * Version 1.2
  *
  * This script displays a progress bar above a prim, with support for a marquee
  * animation.
@@ -11,6 +11,10 @@
  *
  *    23/11/2019 - Updated marquee progress bar to show a 4-block trail instead
  *                 of just 1 block moving left-to-right. Bumped version to 1.1.
+ *
+ *    02/12/2019 - Replaced link message system with JSON version that supports
+ *                 multiple parameters in one message. Improved a few comments.
+ *                 Bumped version to 1.2.
  *
  * Licence:
  *
@@ -43,7 +47,6 @@ integer progress_value = 0;
 integer progress_marquee = FALSE;
 integer progress_marquee_state = 0;
 vector progress_color = <1, 1, 1>;
-
 integer auto_update = TRUE;
 
 update_progress()
@@ -146,68 +149,55 @@ default
 
     link_message( integer sender_num, integer num, string str, key id )
     {
+        if( num != -800100 )
+            return;
+        
         llSetMemoryLimit( llGetUsedMemory() + 2048 );
 
-        if( num == -800100 )
+        if( (integer)llJsonGetValue( str, [ "reset" ] ) )
+            llResetScript();
+
+        string link_num_str = llJsonGetValue( str, [ "link" ] );
+        if( link_num_str != JSON_INVALID )
         {
+            link_number = (integer)link_num_str;
+
             if( link_number == 0 )
                 link_number = LINK_THIS;
-            else
-                link_number = (integer)str;
         }
-        else if( num == -800101 )
-        {
-            progress_text = str;
 
-            if( auto_update )
-                update_progress();
+        string progress_text_str = llJsonGetValue( str, [ "text" ] );
+        if( progress_text_str != JSON_INVALID )
+            progress_text = progress_text_str;
+
+        string progress_value_str = llJsonGetValue( str, [ "value" ] );
+        if( progress_value_str != JSON_INVALID )
+            progress_value = (integer)progress_value_str;
+
+        string progress_marquee_str = llJsonGetValue( str, [ "marquee" ] );
+        if( progress_marquee_str != JSON_INVALID )
+            progress_marquee = (integer)progress_marquee_str;
+        
+        string progress_color_str = llJsonGetValue( str, [ "color" ] );
+        if( progress_color_str != JSON_INVALID )
+            progress_color = (vector)progress_color_str;
+
+        string auto_update_str = llJsonGetValue( str, [ "auto_update" ] );
+        if( auto_update_str != JSON_INVALID )
+            auto_update = (integer)auto_update_str;
+
+        if( progress_marquee )
+        {
+            progress_marquee_state = 0;
+            llSetTimerEvent( 0.1 );
         }
-        else if( num == -800102 )
+        else
         {
-            progress_value = (integer)str;
-
-            if( auto_update )
-                update_progress();
+            llSetTimerEvent( 0.0 );
         }
-        else if( num == -800103 )
-        {
-            progress_marquee = (integer)str;
 
-            if( progress_marquee )
-            {
-                progress_marquee_state = 0;
-                llSetTimerEvent( 0.1 );
-            }
-            else
-            {
-                llSetTimerEvent( 0 );
-            }
-
-            if( auto_update )
-                update_progress();
-        }
-        else if( num == -800104 )
-        {
-            progress_color = (vector)str;
-
-            if( auto_update )
-                update_progress();
-        }
-        else if( num == -800105 )
-        {
-            auto_update = (integer)str;
-
-            if( auto_update )
-                update_progress();
-        }
-        else if( num == -800106 )
-        {
+        if( auto_update || (integer)llJsonGetValue( str, [ "update" ] ) )
             update_progress();
-        }
-        else if( num == -800107 )
-        {
-            llResetScript();
-        }
     }
 
     timer()
