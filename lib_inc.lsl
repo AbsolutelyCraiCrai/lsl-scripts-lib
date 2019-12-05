@@ -20,7 +20,9 @@
 
 /**
  * Advanced Dialog in-line functions
- *
+**/
+
+/**
  * Use this function to send a link message to Advanced Dialog.
  *
  * Parameters:
@@ -38,7 +40,9 @@
 
 /**
  * Progress Status Text in-line functions
- *
+**/
+
+/**
  * Use this function to send a link message to Progress Status Text.
  *
  * Parameters:
