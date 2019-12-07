@@ -44,12 +44,13 @@ The following example shows a confirmation dialog to the user:
 
 	string buttons = llList2Json( JSON_ARRAY, [ "Yes", "No" ] );
 
-	list data = [];
-	data += [ "target", llGetOwner() ];
-	data += [ "icon", "icons/Inv_UnknownObject.png" ];
-	data += [ "title", "Confirm Operation" ];
-	data += [ "message", "Are you sure you wish to continue?" ];
-	data += [ "buttons", buttons ];
+	list data = [
+		"target", llGetOwner(),
+		"icon", "icons/Inv_UnknownObject.png",
+		"title", "Confirm Operation",
+		"message", "Are you sure you wish to continue?",
+		"buttons", buttons
+	];
 
 	integer channel = -100;
 
