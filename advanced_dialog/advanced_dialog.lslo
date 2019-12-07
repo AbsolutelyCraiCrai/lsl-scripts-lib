@@ -22,6 +22,8 @@
  *                 now results in the standard OK button set to be used. Bumped
  *                 version to 1.3.
  *
+ *    07/12/2019 - Show a script error if an invalid dialog type is specified.
+ *
  * Licence:
  *
  *   MIT License
