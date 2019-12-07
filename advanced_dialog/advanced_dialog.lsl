@@ -150,6 +150,8 @@ list get_button_list( list buttons )
 
 /**
  * This function throws an invalid JSON error message to DEBUG_CHANNEL.
+ *
+ * @param err_msg The error message to throw. See ERR_* constants above.
 **/
 invalid_json( string err_msg )
 {
