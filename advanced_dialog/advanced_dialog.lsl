@@ -23,6 +23,8 @@
  *                 version to 1.3.
  *
  *    07/12/2019 - Show a script error if an invalid dialog type is specified.
+ *                 Also, error messages are now specific to the problem, rather than
+ *                 a generic JSON syntax error.
  *
  * Licence:
  *
@@ -61,6 +63,16 @@
 **/
 #define TYPE_DIALOG 0
 #define TYPE_TEXTBOX 1
+
+/**
+ * Error message strings
+**/
+#define ERR_INVALID_PARAM_TARGET "The required \"target\" parameter is missing."
+#define ERR_INVALID_PARAM_TITLE "The required \"title\" parameter is missing."
+#define ERR_INVALID_PARAM_MESSAGE "The required \"message\" parameter is missing."
+#define ERR_INVALID_PARAM_CHANNEL "The channel for the dialog is either missing or set to 0, which is not permitted."
+#define ERR_INVALID_PARAM_BUTTONS "The required \"buttons\" parameter is missing."
+#define ERR_INVALID_PARAM_TYPE "The \"type\" parameter is invalid. This must be either TYPE_DIALOG (0) or TYPE_TEXTBOX (1)."
 
 /**
  * This script tries to have a maximum of 4 KB free at any one time. While this is
@@ -139,14 +151,12 @@ list get_button_list( list buttons )
 /**
  * This function throws an invalid JSON error message to DEBUG_CHANNEL.
 **/
-invalid_json()
+invalid_json( string err_msg )
 {
     llRegionSay(
         DEBUG_CHANNEL,
-        "Error: You have a syntax error in your JSON for Advanced Dialog." +
-        "Ensure that the parameters \"target\", \"title\", \"message\" and " +
-        "\"buttons\" are set, and that the channel number is set to a value " +
-        "other than 0."
+        "Error: " + err_msg + " " +
+        "Ensure that the necessary changes are implemented and try again."
     );
 }
 
@@ -167,7 +177,7 @@ default
         key target = (key)llJsonGetValue( text, [ "target" ] );
         if( (string)target == JSON_INVALID )
         {
-            invalid_json();
+            invalid_json( ERR_INVALID_PARAM_TARGET );
             return;
         }
 
@@ -192,21 +202,21 @@ default
         string title = llJsonGetValue( text, [ "title" ] );
         if( title == JSON_INVALID )
         {
-            invalid_json();
+            invalid_json( ERR_INVALID_PARAM_TITLE );
             return;
         }
         
         string msg = llJsonGetValue( text, [ "message" ] );
         if( msg == JSON_INVALID )
         {
-            invalid_json();
+            invalid_json( ERR_INVALID_PARAM_MESSAGE );
             return;
         }
         
         integer channel = (integer)((string)id);
         if( channel == 0 )
         {
-            invalid_json();
+            invalid_json( ERR_INVALID_PARAM_CHANNEL );
             return;
         }
         
@@ -215,7 +225,7 @@ default
             string buttons = llJsonGetValue( text, [ "buttons" ] );
             if( buttons == JSON_INVALID )
             {
-                invalid_json();
+                invalid_json( ERR_INVALID_PARAM_BUTTONS );
                 return;
             }
             
@@ -229,7 +239,7 @@ default
         }
         else
         {
-            invalid_json();
+            invalid_json( ERR_INVALID_PARAM_TYPE );
             return;
         }
     }
