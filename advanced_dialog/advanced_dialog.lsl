@@ -225,5 +225,10 @@ default
         {
             llTextBox( target, "\n<icon>" + icon + "</icon> " + title + "\n\n" + msg, channel );
         }
+        else
+        {
+            invalid_json();
+            return;
+        }
     }
 }
