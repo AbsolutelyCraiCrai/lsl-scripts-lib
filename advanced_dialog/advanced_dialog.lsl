@@ -1,6 +1,6 @@
 /**
  * Advanced Dialog by John Parker
- * Version 1.3
+ * Version 1.4
  *
  * This script allows you to show "fancy" looking dialogs in LSL, including a title
  * icon and spaced-out button layouts.
@@ -25,6 +25,9 @@
  *    07/12/2019 - Show a script error if an invalid dialog type is specified.
  *                 Also, error messages are now specific to the problem, rather than
  *                 a generic JSON syntax error.
+ *
+ *    08/12/2019 - Removed redundant return statement, added on_rez event with call
+ *                 to llResetScript(), and bumped version to 1.4.
  *
  * Licence:
  *
@@ -169,6 +172,11 @@ default
         set_memory_limit();
     }
     
+    on_rez( integer start_param )
+    {
+        llResetScript();
+    }
+
     link_message( integer sender, integer value, string text, key id )
     {
         if( value != ADVANCED_DIALOG_MESSAGE )
@@ -242,7 +250,6 @@ default
         else
         {
             invalid_json( ERR_INVALID_PARAM_TYPE );
-            return;
         }
     }
 }
