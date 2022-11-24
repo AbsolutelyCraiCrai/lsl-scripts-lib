@@ -143,6 +143,12 @@ default
 
             if( llJsonGetValue( json, [ "req_id" ] ) == "cli" )
             {
+                if( llJsonGetValue( json, [ "error" ] ) == "ERR_FEATURE_INVALID" )
+                {
+                    llOwnerSay( "The requested feature is not configured." );
+                    return;
+                }
+
                 string state_str = "Default";
                 if( llJsonGetValue( json, [ "state" ] ) == (string)FEATURE_STATE_ENABLED )
                     state_str = "Enabled";
