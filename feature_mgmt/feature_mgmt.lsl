@@ -102,9 +102,19 @@ default
             if( state_val == JSON_INVALID || variant_val == JSON_INVALID )
                 return;
 
+            integer state_val_i = (integer)state_val;
+            integer variant_val_i = (integer)variant_val;
+            if( state_val_i < FEATURE_STATE_DEFAULT ||
+                state_val_i > FEATURE_STATE_ENABLED ||
+                variant_val_i < 0 )
+            {
+                llRegionSay( DEBUG_CHANNEL, "Error: State or variant parameters for FEATURE_SET_CONFIG were set to invalid values." );
+                return;
+            }
+
             llLinksetDataWrite(
                 "FeatureConfiguration\\" + text,
-                (string)( (integer)variant_val << 4 | (integer)state_val )
+                (string)( variant_val_i << 4 | state_val_i )
             );
         }
         else if( value == FEATURE_RESET_CONFIG )
@@ -182,6 +192,14 @@ default
             string feature = (string)config[ 1 ];
             integer feature_state = (integer)config[ 2 ];
             integer feature_variant = (integer)config[ 3 ];
+
+            if( feature_state < FEATURE_STATE_DEFAULT ||
+                feature_state > FEATURE_STATE_ENABLED ||
+                feature_variant < 0 )
+            {
+                llOwnerSay( "Error: Feature state or variant is an invalid value." );
+                return;
+            }
 
             llMessageLinked(
                 LINK_THIS,
