@@ -51,3 +51,17 @@
  *     json - The list containing the JSON data for the message.
 **/
 #define update_progress( link, json ) llMessageLinked( link, PROGRESS_STATUS_MESSAGE, llList2Json( JSON_OBJECT, json ), NULL_KEY )
+
+/**
+ * Feature Management constants
+ */
+#define FEATURE_MESSAGE_BASE         -11000
+#define FEATURE_GET_CONFIG           FEATURE_MESSAGE_BASE + 1
+#define FEATURE_GET_CONFIG_RESPONSE  FEATURE_MESSAGE_BASE + 2
+#define FEATURE_SET_CONFIG           FEATURE_MESSAGE_BASE + 3
+#define FEATURE_RESET_CONFIG         FEATURE_MESSAGE_BASE + 4
+#define FEATURE_DEBUG                FEATURE_MESSAGE_BASE + 5
+
+#define FEATURE_STATE_DEFAULT  0
+#define FEATURE_STATE_DISABLED 1
+#define FEATURE_STATE_ENABLED  2

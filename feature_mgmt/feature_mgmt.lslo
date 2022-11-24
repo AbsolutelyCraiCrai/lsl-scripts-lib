@@ -1,42 +1,3 @@
-/**
- * Feature Management by John Parker
- * Version 1.0
- *
- * This script allows you to read and manage feature flags for a product.
- * The flags are persistent across script resets by using Linkset Data.
- *
- * See readme file for usage instructions.
- *
- * Change history:
- *
- *    None.
- *
- * Licence:
- *
- *   MIT License
- *
- *   Copyright (c) 2022 John Parker
- *
- *   Permission is hereby granted, free of charge, to any person obtaining a copy
- *   of this software and associated documentation files (the "Software"), to deal
- *   in the Software without restriction, including without limitation the rights
- *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *   copies of the Software, and to permit persons to whom the Software is
- *   furnished to do so, subject to the following conditions:
- *   
- *   The above copyright notice and this permission notice shall be included in all
- *   copies or substantial portions of the Software.
- *   
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
-**/
-#include "lib\lib_inc.lsl"
-
 integer cli_listener;
 
 default
@@ -49,22 +10,16 @@ default
 
     link_message( integer sender, integer value, string text, key id )
     {
-        if( value == FEATURE_GET_CONFIG )
+        if( value == -11000 + 1 )
         {
             key req_id = id;
 
-            //
-            // Get feature configuration data
-            //
             string config_data = llLinksetDataRead( "FeatureConfiguration\\" + text );
             if( config_data == "" )
             {
-                //
-                // Doesn't exist
-                //
                 llMessageLinked(
                     sender,
-                    FEATURE_GET_CONFIG_RESPONSE,
+                    -11000 + 2,
                     text,
                     llList2Json(
                         JSON_OBJECT,
@@ -79,7 +34,7 @@ default
 
             llMessageLinked(
                 sender,
-                FEATURE_GET_CONFIG_RESPONSE,
+                -11000 + 2,
                 text,
                 llList2Json(
                     JSON_OBJECT,
@@ -91,11 +46,8 @@ default
                 )
             );
         }
-        else if( value == FEATURE_SET_CONFIG )
+        else if( value == -11000 + 3 )
         {
-            //
-            // Set feature configuration data
-            //
             string state_val = llJsonGetValue( (string)id, [ "state" ] );
             string variant_val = llJsonGetValue( (string)id, [ "variant" ] );
 
@@ -107,24 +59,18 @@ default
                 (string)( (integer)variant_val << 4 | (integer)state_val )
             );
         }
-        else if( value == FEATURE_RESET_CONFIG )
+        else if( value == -11000 + 4 )
         {
-            //
-            // Delete all feature configuration data
-            //
             list features = llLinksetDataFindKeys( "^FeatureConfiguration\\\\", 0, 0 );
 
             integer i;
             for( i = 0; i < llGetListLength( features ); i++ )
                 llLinksetDataDelete(
-                    (string)features[ 0 ]                    
+                    llList2String(features, 0 )                    
                 );
         }
-        else if( value == FEATURE_DEBUG )
+        else if( value == -11000 + 5 )
         {
-            //
-            // Debug commands
-            //
             if( text == "EnableCLI" )
             {
                 llListenControl( cli_listener, TRUE );
@@ -134,19 +80,16 @@ default
                 llListenControl( cli_listener, FALSE );
             }
         }
-        else if( value == FEATURE_GET_CONFIG_RESPONSE )
+        else if( value == -11000 + 2 )
         {
-            //
-            // Get request from CLI?
-            //
             string json = (string)id;
 
             if( llJsonGetValue( json, [ "req_id" ] ) == "cli" )
             {
                 string state_str = "Default";
-                if( llJsonGetValue( json, [ "state" ] ) == (string)FEATURE_STATE_ENABLED )
+                if( llJsonGetValue( json, [ "state" ] ) == (string)2 )
                     state_str = "Enabled";
-                else if( llJsonGetValue( json, [ "state" ] ) == (string)FEATURE_STATE_DISABLED )
+                else if( llJsonGetValue( json, [ "state" ] ) == (string)1 )
                     state_str = "Disabled";
 
                 llOwnerSay( "Feature configuration for feature \"" + text + "\":" );
@@ -162,7 +105,7 @@ default
         {
             llMessageLinked(
                 LINK_THIS,
-                FEATURE_RESET_CONFIG,
+                -11000 + 4,
                 "",
                 ""
             );
@@ -173,13 +116,13 @@ default
             if( llGetListLength( config ) != 4 )
                 return;
             
-            string feature = (string)config[ 1 ];
-            integer feature_state = (integer)config[ 2 ];
-            integer feature_variant = (integer)config[ 3 ];
+            string feature = llList2String(config, 1 );
+            integer feature_state = llList2Integer(config, 2 );
+            integer feature_variant = llList2Integer(config, 3 );
 
             llMessageLinked(
                 LINK_THIS,
-                FEATURE_SET_CONFIG,
+                -11000 + 3,
                 feature,
                 llList2Json(
                     JSON_OBJECT,
@@ -198,11 +141,11 @@ default
             if( llGetListLength( config ) != 2 )
                 return;
             
-            string feature = (string)config[ 1 ];
+            string feature = llList2String(config, 1 );
 
             llMessageLinked(
                 LINK_THIS,
-                FEATURE_GET_CONFIG,
+                -11000 + 1,
                 feature,
                 "cli"
             );
@@ -221,8 +164,8 @@ default
             for( i = 0; i < llGetListLength( features ); i++ )
                 llMessageLinked(
                     LINK_THIS,
-                    FEATURE_GET_CONFIG,
-                    llGetSubString( (string)features[ 0 ], 21, -1 ),
+                    -11000 + 1,
+                    llGetSubString( llList2String(features, 0 ), 21, -1 ),
                     "cli"
                 );
         }
@@ -232,7 +175,7 @@ default
             if( llGetListLength( config ) != 2 )
                 return;
             
-            string feature = (string)config[ 1 ];
+            string feature = llList2String(config, 1 );
 
             llLinksetDataDelete(
                 "FeatureConfiguration\\" + feature
