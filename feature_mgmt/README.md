@@ -6,7 +6,9 @@ The library uses Linden Lab's new Linkset Data functions that were introduced in
 ## Usage
 To use this script library, make a call to `llMessageLinked` in the following format:
 
-    llMessageLinked( LINK_THIS, feature_management_message, feature_id, config_data );
+```lsl
+llMessageLinked( LINK_THIS, feature_management_message, feature_id, config_data );
+```
 
 `feature_management_message` must be a constant defined in `lib_inc.lsl` from the following list:
 
@@ -38,109 +40,115 @@ The following examples show how you can use this library to have test features i
 
 #### Check if a feature is enabled
 
-    #include "lib\lib_inc.lsl"
+```lsl
+#include "lib\lib_inc.lsl"
 
-    key feature_req;
+key feature_req;
 
-    default
+default
+{
+    state_entry()
     {
-        state_entry()
-        {
-            //
-            // Get feature configuration for feature ID "testFeature"
-            //
-            feature_req = llGenerateKey();
-            llMessageLinked( LINK_THIS, FEATURE_GET_CONFIG, "testFeature", feature_req );
-        }
+        //
+        // Get feature configuration for feature ID "testFeature"
+        //
+        feature_req = llGenerateKey();
+        llMessageLinked( LINK_THIS, FEATURE_GET_CONFIG, "testFeature", feature_req );
+    }
 
-        link_message( integer sender, integer value, string message, key id )
+    link_message( integer sender, integer value, string message, key id )
+    {
+        if( value == FEATURE_GET_CONFIG_RESPONSE )
         {
-            if( value == FEATURE_GET_CONFIG_RESPONSE )
+            key req_key = (key)llJsonGetValue( (string)id, [ "req_id" ] );
+            
+            if( req_key == feature_req && message == "testFeature" )
             {
-                key req_key = (key)llJsonGetValue( (string)id, [ "req_id" ] );
-                
-                if( req_key == feature_req && message == "testFeature" )
+                if( llJsonGetValue( (string)id, [ "error" ] ) == "ERR_FEATURE_INVALID" )
                 {
-                    if( llJsonGetValue( (string)id, [ "error" ] ) == "ERR_FEATURE_INVALID" )
-                    {
-                        llOwnerSay( "Feature not configured!" );
-                        return;
-                    }
-
-                    //
-                    // "id" contains JSON data with the feature's state and variant ID
-                    //
-                    integer feature_state = (integer)llJsonGetValue( (string)id, [ "state" ] );
-                    integer feature_variant = (integer)llJsonGetValue( (string)id, [ "variant" ] );
-                    
-                    if( feature_state == FEATURE_STATE_ENABLED )
-                        llOwnerSay( "Feature is enabled with variant ID " + (string)feature_variant + "." );
-                    else
-                        llOwnerSay( "Feature is disabled." );
+                    llOwnerSay( "Feature not configured!" );
+                    return;
                 }
+
+                //
+                // "id" contains JSON data with the feature's state and variant ID
+                //
+                integer feature_state = (integer)llJsonGetValue( (string)id, [ "state" ] );
+                integer feature_variant = (integer)llJsonGetValue( (string)id, [ "variant" ] );
+                
+                if( feature_state == FEATURE_STATE_ENABLED )
+                    llOwnerSay( "Feature is enabled with variant ID " + (string)feature_variant + "." );
+                else
+                    llOwnerSay( "Feature is disabled." );
             }
         }
     }
-
+}
+```
 #### Set a feature's configuration
 
-    #include "lib\lib_inc.lsl"
-    
-    default
+```lsl
+#include "lib\lib_inc.lsl"
+
+default
+{
+    state_entry()
     {
-        state_entry()
-        {
-            //
-            // Set feature configuration for feature ID "testFeature"
-            //
-            llMessageLinked(
-                LINK_THIS,
-                FEATURE_SET_CONFIG,
-                "testFeature",
-                llList2Json(
-                    JSON_OBJECT,
-                    [
-                        "state", FEATURE_STATE_ENABLED, // Enabled
-                        "variant", 0 // No variant
-                    ]
-                )
-            );
-        }
+        //
+        // Set feature configuration for feature ID "testFeature"
+        //
+        llMessageLinked(
+            LINK_THIS,
+            FEATURE_SET_CONFIG,
+            "testFeature",
+            llList2Json(
+                JSON_OBJECT,
+                [
+                    "state", FEATURE_STATE_ENABLED, // Enabled
+                    "variant", 0 // No variant
+                ]
+            )
+        );
     }
+}
+```
 
 #### Delete (reset) all feature configurations
+```lsl
+#include "lib\lib_inc.lsl"
 
-    default
+default
+{
+    state_entry()
     {
-        state_entry()
-        {
-            //
-            // Delete all feature configurations
-            //
-            llMessageLinked( LINK_THIS, FEATURE_RESET_CONFIG, "", "" );
-        }
+        //
+        // Delete all feature configurations
+        //
+        llMessageLinked( LINK_THIS, FEATURE_RESET_CONFIG, "", "" );
     }
+}
+```
 
 #### Enable or disable CLI (local chat debug) commands
+```lsl
+#include "lib\lib_inc.lsl"
 
-    #include "lib\lib_inc.lsl"
-    
-    default
+default
+{
+    state_entry()
     {
-        state_entry()
-        {
-            //
-            // Enable debug commands
-            //
-            llMessageLinked( LINK_THIS, FEATURE_DEBUG, "EnableCLI", "" );
+        //
+        // Enable debug commands
+        //
+        llMessageLinked( LINK_THIS, FEATURE_DEBUG, "EnableCLI", "" );
 
-            //
-            // Disable debug commands
-            //
-            llMessageLinked( LINK_THIS, FEATURE_DEBUG, "DisableCLI", "" );
-        }
+        //
+        // Disable debug commands
+        //
+        llMessageLinked( LINK_THIS, FEATURE_DEBUG, "DisableCLI", "" );
     }
-
+}
+```
 
 # Debug Commands
 The local chat debug commands you can send (when CLI is enabled via the `EnableCLI` command for the `FEATURE_DEBUG` link message) are:
