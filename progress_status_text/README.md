@@ -4,7 +4,9 @@ This script displays a progress bar above a prim, with support for a marquee ani
 ## Usage
 To use Progress Status Text, send a link message with the following format:
 
-    llMessageLinked( LINK_THIS, PROGRESS_STATUS_MESSAGE, json, NULL_KEY );
+```lsl
+llMessageLinked( LINK_THIS, PROGRESS_STATUS_MESSAGE, json, NULL_KEY );
+```
 
 |Parameter|Description|
 |--|--|
@@ -30,14 +32,28 @@ To use Progress Status Text, send a link message with the following format:
 ## Example usage
 The following example shows a yellow progress bar climbing by 1% every 0.3 seconds:
 
-    integer pgb_link = LINK_THIS;
-    string pgb_text = "Loading...";
-    vector pgb_color = <1, 1, 0>;
+```lsl
+integer pgb_link = LINK_THIS;
+string pgb_text = "Loading...";
+vector pgb_color = <1, 1, 0>;
 
-	list json = [
-        "link", pgb_link,
-        "text", pgb_text,
-        "color", pgb_color
+list json = [
+    "link", pgb_link,
+    "text", pgb_text,
+    "color", pgb_color
+];
+llMessageLinked(
+    LINK_THIS,
+    PROGRESS_STATUS_MESSAGE,
+    llList2Json( JSON_OBJECT, json ),
+    NULL_KEY
+);
+
+integer percent = 0;
+while( percent <= 100 )
+{
+    json = [
+        "value", percent
     ];
     llMessageLinked(
         LINK_THIS,
@@ -46,22 +62,10 @@ The following example shows a yellow progress bar climbing by 1% every 0.3 secon
         NULL_KEY
     );
 
-    integer percent = 0;
-    while( percent <= 100 )
-    {
-        json = [
-            "value", percent
-        ];
-        llMessageLinked(
-            LINK_THIS,
-            PROGRESS_STATUS_MESSAGE,
-            llList2Json( JSON_OBJECT, json ),
-            NULL_KEY
-        );
+    percent++;
 
-        percent++;
-
-        llSleep( 0.3 );
-    }
+    llSleep( 0.3 );
+}
+```
 
 **Note:** I recommend not sending update messages any faster than 0.3 second intervals due to possible race conditions with Second Life link messages.

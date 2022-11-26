@@ -15,36 +15,39 @@ When using these libraries with the Firestorm preprocessor, you can include the 
 
 To include the include script, use the following line at the top of your LSL script:
 
-    #include "path_to_lib_folder\lib_inc.lsl"
+```lsl
+#include "path_to_lib_folder\lib_inc.lsl"
+```
 
 Then you can use the libraries with their respective constants and in-line functions. The following example shows use of the Advanced Dialog library with this include script. Note the use of the `advanced_dialog` in-line function defined in the include script:
 
-    #include "lib\lib_inc.lsl"
+```lsl
+#include "lib\lib_inc.lsl"
 
-    integer listener;
+integer listener;
 
-    default
+default
+{
+    touch_start( integer num_detected )
     {
-        touch_start( integer num_detected )
-        {
-            llListenRemove( listener );
-            listener = llListen( -100, "", llDetectedKey( 0 ), "" );
+        llListenRemove( listener );
+        listener = llListen( -100, "", llDetectedKey( 0 ), "" );
 
-            list dlg = [
-                "target", llDetectedKey( 0 ),
-                "title", "Example dialog",
-                "message", "This is an example dialog using the include library.",
-                "buttons", llList2Json( JSON_ARRAY, [ "Button 1", "Button 2", "Button 3", "Button 4" ] )
-            ];
-            advanced_dialog( LINK_THIS, dlg, -100 );
-        }
-
-        listen( integer channel, string name, key id, string message )
-        {
-            llListenRemove( listener );
-
-            llRegionSayTo( id, 0 "You chose \"" + message + "\"." );
-        }
+        list dlg = [
+            "target", llDetectedKey( 0 ),
+            "title", "Example dialog",
+            "message", "This is an example dialog using the include library.",
+            "buttons", llList2Json( JSON_ARRAY, [ "Button 1", "Button 2", "Button 3", "Button 4" ] )
+        ];
+        advanced_dialog( LINK_THIS, dlg, -100 );
     }
 
+    listen( integer channel, string name, key id, string message )
+    {
+        llListenRemove( listener );
+
+        llRegionSayTo( id, 0 "You chose \"" + message + "\"." );
+    }
+}
+```
 The descriptions of the available in-line functions are in the include script source code.

@@ -11,7 +11,9 @@ This dialog does this by default, and allows you to change the icon path with on
 ## Usage
 To use this script library, make a call to `llMessageLinked` in the following format:
 
-    llMessageLinked( LINK_THIS, ADVANCED_DIALOG_MESSAGE, json, channel );
+```
+llMessageLinked( LINK_THIS, ADVANCED_DIALOG_MESSAGE, json, channel );
+```
 
 ### Parameter Information
 |Parameter|Description|
@@ -42,23 +44,25 @@ Specifying `JSON_NULL` as a button will result in that button becoming a blank s
 ## Example usage
 The following example shows a confirmation dialog to the user:
 
-	string buttons = llList2Json( JSON_ARRAY, [ "Yes", "No" ] );
+```lsl
+string buttons = llList2Json( JSON_ARRAY, [ "Yes", "No" ] );
 
-	list data = [
-		"target", llGetOwner(),
-		"icon", "icons/Inv_UnknownObject.png",
-		"title", "Confirm Operation",
-		"message", "Are you sure you wish to continue?",
-		"buttons", buttons
-	];
+list data = [
+	"target", llGetOwner(),
+	"icon", "icons/Inv_UnknownObject.png",
+	"title", "Confirm Operation",
+	"message", "Are you sure you wish to continue?",
+	"buttons", buttons
+];
 
-	integer channel = -100;
+integer channel = -100;
 
-	llMessageLinked(
-		LINK_THIS,
-		-39484225, // ADVANCED_DIALOG_MESSAGE
-		llList2Json( JSON_OBJECT, data ),
-		(string)channel
-	);
+llMessageLinked(
+	LINK_THIS,
+	-39484225, // ADVANCED_DIALOG_MESSAGE
+	llList2Json( JSON_OBJECT, data ),
+	(string)channel
+);
+```
 
 ![A screenshot of an example using Advanced Dialog.](https://raw.githubusercontent.com/JohnEMParker/lsl-scripts-lib/master/advanced_dialog/example.png "Advanced Dialog Example")
