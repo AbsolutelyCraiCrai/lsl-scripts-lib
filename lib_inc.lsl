@@ -103,14 +103,14 @@
 #define features_disable( link, id ) llMessageLinked( link, FEATURE_SET_CONFIG, id, llList2Json( JSON_OBJECT, [ "state", FEATURE_STATE_DISABLED, "variant", 0 ] ) )
 
 /**
- * Use this function to reset a feature to the default state.
+ * Use this function to set a feature's configuration to default values.
  *
  * Parameters:
  *
  *     link - The link number to send the message to.
  *     id - The feature ID.
 **/
-#define features_reset( link, id ) llMessageLinked( link, FEATURE_SET_CONFIG, id, llList2Json( JSON_OBJECT, [ "state", FEATURE_STATE_DEFAULT, "variant", 0 ] ) )
+#define features_default( link, id ) llMessageLinked( link, FEATURE_SET_CONFIG, id, llList2Json( JSON_OBJECT, [ "state", FEATURE_STATE_DEFAULT, "variant", 0 ] ) )
 
 /**
  * Use this function to reset all features.
@@ -119,7 +119,7 @@
  *
  *     link - The link number to send the message to.
 **/
-#define features_reset_all( link ) llMessageLinked( link, FEATURE_RESET_CONFIG, "", "" )
+#define features_reset( link ) llMessageLinked( link, FEATURE_RESET_CONFIG, "", "" )
 
 /**
  * Use this function to enable CLI functionality.
